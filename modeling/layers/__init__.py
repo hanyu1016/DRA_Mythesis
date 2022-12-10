@@ -2,8 +2,9 @@ import torch
 from modeling.layers.deviation_loss import DeviationLoss
 from modeling.layers.binary_focal_loss import BinaryFocalLoss
 
-def build_criterion(criterion):
+def build_criterion(criterion ,classname):
     if criterion == "deviation":
+        print("class name :",classname)
         print("Loss : Deviation")
         return DeviationLoss()
     elif criterion == "BCE":

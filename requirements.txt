@@ -1,7 +1,9 @@
-matplotlib
-numpy
-pandas
-Pillow
-scikit_learn
-tqdm
-# conda install pytorch==1.12.1 torchvision==0.13.1 torchaudio==0.12.1 cudatoolkit=11.6 -c pytorch -c conda-forge
+matplotlib==3.3.3
+numpy==1.18.5
+pandas==0.25.3
+Pillow==8.4.0
+scikit_learn==1.0.1
+torch==1.1.0
+torchvision==0.3.0
+tqdm==4.54.0
+# conda install pytorch==1.1.0 torchvision==0.3.0 cudatoolkit=10.0 -c pytorch

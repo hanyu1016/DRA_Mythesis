@@ -2,3 +2,4 @@
 experiment/
 data/mvtec_anomaly_detection
 *.png
+*.bak

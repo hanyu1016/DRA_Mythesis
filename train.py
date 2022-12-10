@@ -5,7 +5,7 @@ import torch.nn.functional as F
 import argparse
 import os
 import time
-
+import wandb
 from dataloaders.dataloader import initDataloader
 from modeling.net import DRA
 from tqdm import tqdm
@@ -38,7 +38,7 @@ class Trainer(object):
             self.model.load_state_dict(torch.load(self.args.pretrain_dir))
             print('Load pretrain weight from: ' + self.args.pretrain_dir)
 
-        self.criterion = build_criterion(args.criterion)
+        self.criterion = build_criterion(args.criterion ,args.classname)
 
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=0.0002, weight_decay=1e-5)
         self.scheduler = torch.optim.lr_scheduler.StepLR(self.optimizer, step_size=10, gamma=0.1)
@@ -104,6 +104,7 @@ class Trainer(object):
                 class_loss[i] += losses[i].item()
 
             tbar.set_description('Epoch:%d, Train loss: %.3f' % (epoch, train_loss / (idx + 1)))
+            wandb.log({"Train loss": (train_loss / (idx + 1))}, step=epoch)
 
 
     def normalization(self, data):
@@ -149,6 +150,7 @@ class Trainer(object):
 
             test_loss += loss.item()
             tbar.set_description('Test loss: %.3f' % (test_loss / (i + 1)))
+            wandb.log({"Testing loss": test_loss / (i + 1)}, step=epoch)
 
             for i in range(self.args.total_heads):
                 if i == 0:
@@ -199,7 +201,7 @@ def aucPerformance(mse, labels, prt=True):
     roc_auc = roc_auc_score(labels, mse)
     ap = average_precision_score(labels, mse)
     if prt:
-        print("AUC-ROC: %.4f, AUC-PR: %.4f" % (roc_auc, ap))
+        print("class:",args.classname + ", ", "AUC-ROC: %.4f, AUC-PR: %.4f" % (roc_auc, ap))
     return roc_auc, ap;
 
 if __name__ == '__main__':
@@ -213,7 +215,7 @@ if __name__ == '__main__':
     parser.add_argument("--test_rate", type=float, default=0.0,
                         help="the outlier contamination rate in the training data")
     parser.add_argument("--dataset", type=str, default='mvtecad', help="a list of data set names")
-    parser.add_argument("--ramdn_seed", type=int, default=42, help="the random seed number")
+    parser.add_argument("--ramdn_seed", type=int, default=1, help="the random seed number")
     parser.add_argument('--workers', type=int, default=4, metavar='N', help='dataloader threads')
     parser.add_argument('--no-cuda', action='store_true', default=False, help='disables CUDA training')
     parser.add_argument('--savename', type=str, default='model.pkl', help="save modeling")
@@ -233,6 +235,25 @@ if __name__ == '__main__':
     parser.add_argument('--outlier_root', type=str, default=None, help="OOD dataset root")
     args = parser.parse_args()
 
+    wandb.login()
+    wandb.init()
+    
+    # Seed setting
+    seed = 1
+    random.seed(seed)
+    np.random.RandomState(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+
+    # enable cudnn backend
+    os.environ['PYTHONHASHSEED'] = '0'
+    torch.backends.cudnn.enabled = True
+    random.seed(seed)
+    torch.cuda.manual_seed_all(seed)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+    
     args.cuda = not args.no_cuda and torch.cuda.is_available()
     trainer = Trainer(args)
 
@@ -249,8 +270,11 @@ if __name__ == '__main__':
     print('Total Epoches:', trainer.args.epochs)
     trainer.model = trainer.model.to('cuda')
     trainer.criterion = trainer.criterion.to('cuda')
+    start = time.perf_counter()
     for epoch in range(0, trainer.args.epochs):
         trainer.training(epoch)
+    end = time.perf_counter()
+    print("Total training time", end - start)
     trainer.eval()
     trainer.save_weights(args.savename)
 
