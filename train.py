@@ -104,7 +104,7 @@ class Trainer(object):
                 class_loss[i] += losses[i].item()
 
             tbar.set_description('Epoch:%d, Train loss: %.3f' % (epoch, train_loss / (idx + 1)))
-            wandb.log({"Train loss": (train_loss / (idx + 1))}, step=epoch)
+            # wandb.log({"Train loss": (train_loss / (idx + 1))}, step=epoch)
 
 
     def normalization(self, data):
@@ -150,7 +150,7 @@ class Trainer(object):
 
             test_loss += loss.item()
             tbar.set_description('Test loss: %.3f' % (test_loss / (i + 1)))
-            wandb.log({"Testing loss": test_loss / (i + 1)}, step=epoch)
+            # wandb.log({"Testing loss": test_loss / (i + 1)}, step=epoch)
 
             for i in range(self.args.total_heads):
                 if i == 0:
@@ -235,8 +235,8 @@ if __name__ == '__main__':
     parser.add_argument('--outlier_root', type=str, default=None, help="OOD dataset root")
     args = parser.parse_args()
 
-    wandb.login()
-    wandb.init()
+    # wandb.login()
+    # wandb.init()
     
     # Seed setting
     seed = 1

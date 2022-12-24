@@ -20,7 +20,7 @@ class HolisticHead(nn.Module):
 
 
 class PlainHead(nn.Module):
-    def __init__(self, in_dim, topk_rate=0.1):
+    def __init__(self, in_dim, topk_rate=0.1): # in_dim = 512
         super(PlainHead, self).__init__()
         self.scoring = nn.Conv2d(in_channels=in_dim, out_channels=1, kernel_size=1, padding=0)
         self.topk_rate = topk_rate
@@ -55,10 +55,10 @@ class DRA(nn.Module):
         self.cfg = cfg
         self.feature_extractor = build_feature_extractor(backbone, cfg)
         self.in_c = NET_OUT_DIM[backbone]
-        self.holistic_head = HolisticHead(self.in_c)
-        self.seen_head = PlainHead(self.in_c, self.cfg.topk)
-        self.pseudo_head = PlainHead(self.in_c, self.cfg.topk)
-        self.composite_head = CompositeHead(self.in_c, self.cfg.topk)
+        self.holistic_head = HolisticHead(self.in_c) # 整體
+        self.seen_head = PlainHead(self.in_c, self.cfg.topk) #簡單
+        self.pseudo_head = PlainHead(self.in_c, self.cfg.topk) #簡單
+        self.composite_head = CompositeHead(self.in_c, self.cfg.topk) #合成
 
     def forward(self, image, label):
         image_pyramid = list()

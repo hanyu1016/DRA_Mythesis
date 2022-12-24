@@ -39,13 +39,16 @@ class CutMix(object):
         #     cv2.rectangle(img2array_RGB, (x, y), (x+w, y+h), (0, 0, 225), 0)
 
         # image_cropped = img2array_RGB[y+1:y+h,x+1:x+w]
-        # image_cropped.show()
-        
         # image_cropped = Image.fromarray(image_cropped)
-        # print("Convert:",type(image_cropped))
-        # print("image_cropped.size[0]:",image_cropped.size[0])
-        # print("image_cropped.size[1]:",image_cropped.size[1])
-        # image_cropped.show()
+        # h, w = image_cropped.size
+
+        # if h > w :
+        #     w = h
+        # else :
+        #     h = w
+        
+        # if h <300 and w <300  :
+        #     h = w = 380
 
         h = img.size[0]
         w = img.size[1]
@@ -74,5 +77,4 @@ class CutMix(object):
         insert_box = [to_location_w, to_location_h, to_location_w + cut_w, to_location_h + cut_h]
         augmented = img.copy()
         augmented.paste(patch, insert_box) # Let patch paste in augmented with location insert_box
-        augmented.show() # PIL.Image show augmented
         return augmented
