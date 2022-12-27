@@ -26,11 +26,18 @@ class PlainHead(nn.Module):
         self.topk_rate = topk_rate
 
     def forward(self, x):
+        # print("PlainHead feature: ",x.shape)
+        # print("origin",x.shape) # [37, 512, 14, 14]
         x = self.scoring(x)
-        x = x.view(int(x.size(0)), -1)
+        # print(x.shape) # [37, 1, 14, 14], size[0] = 37
+        x = x.view(int(x.size(0)), -1) 
+        # print(x.shape)
         topk = max(int(x.size(1) * self.topk_rate), 1)
+        # print("TOPK:",topk)
         x = torch.topk(torch.abs(x), topk, dim=1)[0]
+        # print("After TOPK:",x)
         x = torch.mean(x, dim=1).view(-1, 1)
+        # print("Mean:",x)
         return x
 
 
@@ -42,7 +49,7 @@ class CompositeHead(PlainHead):
                                   nn.ReLU())
 
     def forward(self, x, ref):
-        ref = torch.mean(ref, dim=0).repeat([x.size(0), 1, 1, 1])
+        ref = torch.mean(ref, dim=0).repeat([x.size(0), 1, 1, 1]) # 將 ref 的數量擴充到跟 Normal 相同
         x = ref - x
         x = self.conv(x)
         x = super().forward(x)
@@ -61,7 +68,7 @@ class DRA(nn.Module):
         self.composite_head = CompositeHead(self.in_c, self.cfg.topk) #合成
 
     def forward(self, image, label):
-        image_pyramid = list()
+        image_pyramid = list() #金字塔不同 scale的size
         for i in range(self.cfg.total_heads):
             image_pyramid.append(list())
         for s in range(self.cfg.n_scales):
