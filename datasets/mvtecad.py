@@ -28,7 +28,7 @@ class MVTecAD(BaseADDataset):
         split = 'train'
         normal_files = os.listdir(os.path.join(self.root, split, 'good'))
         for file in normal_files:
-            if 'png' in file[-3:] or 'PNG' in file[-3:] or 'jpg' in file[-3:] or 'npy' in file[-3:]:
+            if 'png' in file[-3:] or 'PNG' in file[-3:] or 'JPG' in file[-3:] or 'npy' in file[-3:]:
                 normal_data.append(split + '/good/' + file)
 
         self.nPollution = int((len(normal_data)/(1-self.pollution_rate)) * self.pollution_rate)
@@ -42,7 +42,7 @@ class MVTecAD(BaseADDataset):
             split = 'test'
             normal_files = os.listdir(os.path.join(self.root, split, 'good'))
             for file in normal_files:
-                if 'png' in file[-3:] or 'PNG' in file[-3:] or 'jpg' in file[-3:] or 'npy' in file[-3:]:
+                if 'png' in file[-3:] or 'PNG' in file[-3:] or 'JPG' in file[-3:] or 'npy' in file[-3:]:
                     normal_data.append(split + '/good/' + file)
 
         outlier_data, pollution_data = self.split_outlier()
@@ -69,7 +69,7 @@ class MVTecAD(BaseADDataset):
             cl_root = os.path.join(self.args.outlier_root, cl, 'train', 'good')
             ood_file = os.listdir(cl_root)
             for file in ood_file:
-                if 'png' in file[-3:] or 'PNG' in file[-3:] or 'jpg' in file[-3:] or 'npy' in file[-3:]:
+                if 'png' in file[-3:] or 'PNG' in file[-3:] or 'JPG' in file[-3:] or 'npy' in file[-3:]:
                     ood_data.append(os.path.join(cl_root, file))
         return ood_data
 
@@ -85,7 +85,7 @@ class MVTecAD(BaseADDataset):
                     continue
                 outlier_file = os.listdir(os.path.join(outlier_data_dir, cl))
                 for file in outlier_file:
-                    if 'png' in file[-3:] or 'PNG' in file[-3:] or 'jpg' in file[-3:] or 'npy' in file[-3:]:
+                    if 'png' in file[-3:] or 'PNG' in file[-3:] or 'JPG' in file[-3:] or 'npy' in file[-3:]:
                         if cl == self.know_class:
                             know_class_data.append('test/' + cl + '/' + file)
                         else:
@@ -105,7 +105,7 @@ class MVTecAD(BaseADDataset):
                 continue
             outlier_file = os.listdir(os.path.join(outlier_data_dir, cl))
             for file in outlier_file:
-                if 'png' in file[-3:] or 'PNG' in file[-3:] or 'jpg' in file[-3:] or 'npy' in file[-3:]:
+                if 'png' in file[-3:] or 'PNG' in file[-3:] or 'JPG' in file[-3:] or 'npy' in file[-3:]:
                     outlier_data.append('test/' + cl + '/' + file)
         np.random.RandomState(self.args.ramdn_seed).shuffle(outlier_data)
         if self.train:
