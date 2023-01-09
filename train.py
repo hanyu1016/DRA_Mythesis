@@ -168,10 +168,17 @@ class Trainer(object):
             for label, score in zip(total_target, total_pred):
                 w.write(str(label) + '   ' + str(score) + "\n")
 
-        total_roc, total_pr = aucPerformance(total_pred, total_target)
+        super_threshold_indices = total_pred > 0
+        total_pred[super_threshold_indices] = 1
+        super_threshold_indices = total_pred < 0
+        total_pred[super_threshold_indices] = 0
+        roc_auc_test = roc_auc_score(total_target,total_pred)
+        print(roc_auc_test)
 
-        normal_mask = total_target == 0
-        outlier_mask = total_target == 1
+        total_roc, total_pr = aucPerformance(total_target, total_pred)
+
+        normal_mask = total_target == 0  # 0 為正常圖片
+        outlier_mask = total_target == 1 # 1 為瑕疵
         plt.clf()
         plt.bar(np.arange(total_pred.size)[normal_mask], total_pred[normal_mask], color='green')
         plt.bar(np.arange(total_pred.size)[outlier_mask], total_pred[outlier_mask], color='red')
@@ -197,7 +204,7 @@ class Trainer(object):
         net_dict.update(ae_net_dict)
         self.model.load_state_dict(net_dict)
 
-def aucPerformance(mse, labels, prt=True):
+def aucPerformance(labels, mse, prt=True):
     roc_auc = roc_auc_score(labels, mse)
     ap = average_precision_score(labels, mse)
     if prt:

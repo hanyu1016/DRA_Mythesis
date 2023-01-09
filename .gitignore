@@ -1,5 +1,9 @@
 #
 experiment/
 data/mvtec_anomaly_detection
+data/VisA_20220922
+*.json
 *.png
 *.bak
+*.pyc
+*.txt
