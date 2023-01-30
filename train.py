@@ -173,7 +173,9 @@ class Trainer(object):
         super_threshold_indices = total_pred < 0
         total_pred[super_threshold_indices] = 0
         roc_auc_test = roc_auc_score(total_target,total_pred)
-        print(roc_auc_test)
+        roc_accurancy = round(roc_auc_test,4)
+        print("roc_accurancy",roc_accurancy)
+        print("origin label:",total_target)
 
         total_roc, total_pr = aucPerformance(total_target, total_pred)
 

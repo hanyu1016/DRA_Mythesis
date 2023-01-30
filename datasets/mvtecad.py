@@ -148,6 +148,7 @@ class MVTecAD(BaseADDataset):
         return len(self.images)
 
     def __getitem__(self, index):
+        rootList = []
         rnd = random.randint(0, 1)
         if index in self.normal_idx and rnd == 0 and self.train:
             if self.ood_data is None:
@@ -162,5 +163,9 @@ class MVTecAD(BaseADDataset):
             image = self.load_image(os.path.join(self.root, self.images[index]))
             transform = self.transform
             label = self.labels[index]
+            testFlieRoot = os.path.join(self.root, self.images[index])
+            rootList.append(testFlieRoot)
         sample = {'image': transform(image), 'label': label}
-        return sample
+        # if not self.train:
+        #     print(rootList)
+        return sample 
