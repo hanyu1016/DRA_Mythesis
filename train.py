@@ -275,7 +275,9 @@ if __name__ == '__main__':
     for epoch in range(0, trainer.args.epochs):
         trainer.training(epoch)
     end = time.perf_counter()
-    print("Total training time", end - start)
+    localtime = time.asctime(time.localtime(time.time()))
+    print("Total training time :", end - start)
+    print("Local time :",localtime)    
     trainer.eval()
     trainer.save_weights(args.savename)
 

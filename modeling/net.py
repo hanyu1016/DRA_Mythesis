@@ -5,10 +5,10 @@ from modeling.networks.backbone import build_feature_extractor, NET_OUT_DIM
 
 
 class HolisticHead(nn.Module):
-    def __init__(self, in_dim, dropout=0):
+    def __init__(self, in_dim, dropout=0.1):
         super(HolisticHead, self).__init__()
-        self.fc1 = nn.Linear(in_dim, 256)
-        self.fc2 = nn.Linear(256, 1)
+        self.fc1 = nn.Linear(in_dim, 64)
+        self.fc2 = nn.Linear(64, 1)
         self.drop = nn.Dropout(dropout)
 
     def forward(self, x):
@@ -26,7 +26,7 @@ class PlainHead(nn.Module):
         self.topk_rate = topk_rate
 
     def forward(self, x):
-        # print("PlainHead feature: ",x.shape)
+        # print("PlainHead feature: ",x.shape) 
         # print("origin",x.shape) # [37, 512, 14, 14]
         x = self.scoring(x)
         # print(x.shape) # [37, 1, 14, 14], size[0] = 37
