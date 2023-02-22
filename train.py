@@ -174,8 +174,8 @@ class Trainer(object):
         total_pred[super_threshold_indices] = 0
         roc_auc_test = roc_auc_score(total_target,total_pred)
         roc_accurancy = round(roc_auc_test,4)
-        print("roc_accurancy",roc_accurancy)
-        print("origin label:",total_target)
+        # print("roc_accurancy",roc_accurancy)
+        # print("origin label:",total_target)
 
         total_roc, total_pr = aucPerformance(total_target, total_pred)
 
@@ -211,6 +211,7 @@ def aucPerformance(labels, mse, prt=True):
     ap = average_precision_score(labels, mse)
     if prt:
         print("class:",args.classname + ", ", "AUC-ROC: %.4f, AUC-PR: %.4f" % (roc_auc, ap))
+        print("---------------------------------------------------------------------------")
     return roc_auc, ap;
 
 if __name__ == '__main__':
