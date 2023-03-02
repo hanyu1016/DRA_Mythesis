@@ -5,10 +5,10 @@ from modeling.networks.backbone import build_feature_extractor, NET_OUT_DIM
 
 
 class HolisticHead(nn.Module):
-    def __init__(self, in_dim, dropout=0.1):
+    def __init__(self, in_dim, dropout=0):
         super(HolisticHead, self).__init__()
-        self.fc1 = nn.Linear(in_dim, 64)
-        self.fc2 = nn.Linear(64, 1)
+        self.fc1 = nn.Linear(in_dim, 256)
+        self.fc2 = nn.Linear(256, 1)
         self.drop = nn.Dropout(dropout)
 
     def forward(self, x):
