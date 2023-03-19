@@ -5,6 +5,7 @@ from PIL import Image
 from torchvision import transforms
 from datasets.cutmix import CutMix
 import random
+from datasets.synthetic_anomaly_process import Synthetic_Anomaly_Process
 
 class MVTecAD(BaseADDataset):
 
@@ -131,7 +132,8 @@ class MVTecAD(BaseADDataset):
     def transform_pseudo(self):
         composed_transforms = transforms.Compose([
             transforms.Resize((self.args.img_size,self.args.img_size)),
-            CutMix(),
+            # CutMix(),
+            Synthetic_Anomaly_Process(),
             transforms.RandomRotation(180),
             transforms.ToTensor(),
             transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])])

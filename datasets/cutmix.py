@@ -82,5 +82,7 @@ class CutMix(object):
         insert_box = [to_location_w, to_location_h, to_location_w + cut_w, to_location_h + cut_h]
         augmented = img.copy()
         augmented.paste(patch, insert_box) # Let patch paste in augmented with location insert_box
-        # augmented.show()
-        return augmented
+       
+        # return augmented
+        return img
+    
