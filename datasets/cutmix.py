@@ -59,7 +59,7 @@ class CutMix(object):
         # w = img.size[1]
 
         ratio_area = random.uniform(self.area_ratio[0], self.area_ratio[1]) * w * h
-        log_ratio = torch.log(torch.tensor((self.aspect_ratio, 1 / self.aspect_ratio)))
+        log_ratio = torch.log(torch.tensor((self.aspect_ratio, 1 / self.aspect_ratio))) # aspect_ratio 畫幅比例
         aspect = torch.exp(
             torch.empty(1).uniform_(log_ratio[0], log_ratio[1])
         ).item()
@@ -76,13 +76,20 @@ class CutMix(object):
         if self.colorJitter:
             patch = self.colorJitter(patch)
 
-        to_location_h = int(random.uniform(0, h - cut_h))
-        to_location_w = int(random.uniform(0, w - cut_w))
+        # 比較像是 paste 在物件上的位置
+        # to_location_h = int(random.uniform(0, h - cut_h))
+        # to_location_w = int(random.uniform(0, w - cut_w))
+
+        # Paste 在整張物件上隨機位置
+        to_location_h = int(random.uniform(0, img.size[0] - cut_h))
+        to_location_w = int(random.uniform(0, img.size[1] - cut_w))
+        print("img.size[0] :",img.size[0])
+        print("img.size[1] :",img.size[1])
 
         insert_box = [to_location_w, to_location_h, to_location_w + cut_w, to_location_h + cut_h]
         augmented = img.copy()
         augmented.paste(patch, insert_box) # Let patch paste in augmented with location insert_box
        
-        # return augmented
-        return img
+        # augmented.show()
+        return augmented
     

@@ -163,10 +163,7 @@ class Synthetic_Anomaly_Process(object):
         texture_image = Image.fromarray(texture_anomaly, mode = 'RGB')
         structure_image = Image.fromarray(structure_anomaly, mode = 'RGB')
 
-        # if factor >= 0.8 :
-        #     return texture_image
-        # else :
-        #     return structure_image
+      
         if factor >= 0.8 :
             return structure_image
         else :
