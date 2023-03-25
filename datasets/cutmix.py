@@ -77,14 +77,14 @@ class CutMix(object):
             patch = self.colorJitter(patch)
 
         # 比較像是 paste 在物件上的位置
-        # to_location_h = int(random.uniform(0, h - cut_h))
-        # to_location_w = int(random.uniform(0, w - cut_w))
+        to_location_h = int(random.uniform(0, h - cut_h))
+        to_location_w = int(random.uniform(0, w - cut_w))
 
         # Paste 在整張物件上隨機位置
-        to_location_h = int(random.uniform(0, img.size[0] - cut_h))
-        to_location_w = int(random.uniform(0, img.size[1] - cut_w))
-        print("img.size[0] :",img.size[0])
-        print("img.size[1] :",img.size[1])
+        # to_location_h = int(random.uniform(0, img.size[0] - cut_h))
+        # to_location_w = int(random.uniform(0, img.size[1] - cut_w))
+        # print("img.size[0] :",img.size[0])
+        # print("img.size[1] :",img.size[1])
 
         insert_box = [to_location_w, to_location_h, to_location_w + cut_w, to_location_h + cut_h]
         augmented = img.copy()

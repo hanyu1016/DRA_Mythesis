@@ -1,4 +1,4 @@
-call C:\Users\MVCLAB\Anaconda3\Scripts\activate.bat C:\Users\MVCLAB\Anaconda3\envs\DRA
+call C:\Users\MVCLAB\Anaconda3\Scripts\activate.bat C:\Users\MVCLAB\Anaconda3\envs\DRA_plus
 cd C:\Users\MVCLAB\Desktop\DRA
 python train.py --dataset_root=./data/mvtec_anomaly_detection --classname=bottle --experiment_dir=./experiment --nAnomaly=1 >>DRA_experiments.txt
 python train.py --dataset_root=./data/mvtec_anomaly_detection --classname=cable --experiment_dir=./experiment --nAnomaly=1 >>DRA_experiments.txt

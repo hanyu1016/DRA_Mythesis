@@ -132,7 +132,7 @@ class MVTecAD(BaseADDataset):
     def transform_pseudo(self):
         composed_transforms = transforms.Compose([
             transforms.Resize((self.args.img_size,self.args.img_size)),
-            # CutMix(),
+            CutMix(),
             Synthetic_Anomaly_Process(),
             transforms.RandomRotation(180),
             transforms.ToTensor(),
