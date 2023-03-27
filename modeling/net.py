@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from modeling.networks.backbone import build_feature_extractor, NET_OUT_DIM
+from models import CoordAtt
 
 
 class HolisticHead(nn.Module):
@@ -44,6 +45,7 @@ class PlainHead(nn.Module):
 class CompositeHead(PlainHead):
     def __init__(self, in_dim, topk=0.1):
         super(CompositeHead, self).__init__(in_dim, topk)
+        # self.attn = CoordAtt(in_dim, in_dim)
         self.conv = nn.Sequential(nn.Conv2d(in_dim, in_dim, 3, padding=1),
                                   nn.BatchNorm2d(in_dim),
                                   nn.ReLU())
@@ -51,6 +53,8 @@ class CompositeHead(PlainHead):
     def forward(self, x, ref):
         ref = torch.mean(ref, dim=0).repeat([x.size(0), 1, 1, 1]) # 將 ref 的數量擴充到跟 Normal 相同
         x = ref - x
+        # x_att = self. attn(x)
+        # x = self.conv(x)*x_att
         x = self.conv(x)
         x = super().forward(x)
         return x
