@@ -12,6 +12,7 @@ from tqdm import tqdm
 from sklearn.metrics import average_precision_score, roc_auc_score
 from modeling.layers import build_criterion
 import random
+import datetime
 
 import matplotlib.pyplot as plt
 
@@ -104,7 +105,7 @@ class Trainer(object):
                 class_loss[i] += losses[i].item()
 
             tbar.set_description('Epoch:%d, Train loss: %.3f' % (epoch, train_loss / (idx + 1)))
-            # wandb.log({"Train loss": (train_loss / (idx + 1))}, step=epoch)
+            wandb.log( {self.args.classname + "Train loss": (train_loss / (idx + 1))}, step=epoch)
 
 
     def normalization(self, data):
@@ -236,8 +237,9 @@ if __name__ == '__main__':
     parser.add_argument('--outlier_root', type=str, default=None, help="OOD dataset root")
     args = parser.parse_args()
 
-    # wandb.login()
-    # wandb.init()
+    date = datetime.date.today() 
+    wandb.login()
+    wandb.init(project='DRA', name ='%s'% date + ":"+args.classname)
     
     # Seed setting
     seed = 1

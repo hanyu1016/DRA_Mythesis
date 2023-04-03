@@ -7,3 +7,6 @@ data/VisA_20220922
 *.bak
 *.pyc
 *.txt
+*.log
+*.yaml
+*.wandb
