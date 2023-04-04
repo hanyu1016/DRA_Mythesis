@@ -165,7 +165,7 @@ class Trainer(object):
         for i in range(1, self.args.total_heads):
             total_pred = total_pred + self.normalization(class_pred[i])
 
-        with open(self.args.experiment_dir + '/result.txt', mode='a+', encoding="utf-8") as w:
+        with open(self.args.experiment_dir + '_' + args.classname + '/result.txt', mode='a+', encoding="utf-8") as w:
             for label, score in zip(total_target, total_pred):
                 w.write(str(label) + '   ' + str(score) + "\n")
 
@@ -177,13 +177,13 @@ class Trainer(object):
         plt.bar(np.arange(total_pred.size)[normal_mask], total_pred[normal_mask], color='green')
         plt.bar(np.arange(total_pred.size)[outlier_mask], total_pred[outlier_mask], color='red')
         plt.ylabel("Anomaly score")
-        plt.savefig(args.experiment_dir + "/vis.png")
+        plt.savefig(args.experiment_dir + '_' + args.classname + "/vis.png")
         return total_roc, total_pr
 
     def save_weights(self, filename):
         # if not os.path.exists(WEIGHT_DIR):
         #     os.makedirs(WEIGHT_DIR)
-        torch.save(self.model.state_dict(), os.path.join(args.experiment_dir, filename))
+        torch.save(self.model.state_dict(), os.path.join(args.experiment_dir+ '_' + args.classname , filename))
 
     def load_weights(self, filename):
         path = os.path.join(WEIGHT_DIR, filename)
@@ -222,7 +222,7 @@ if __name__ == '__main__':
     parser.add_argument('--no-cuda', action='store_true', default=False, help='disables CUDA training')
     parser.add_argument('--savename', type=str, default='model.pkl', help="save modeling")
     parser.add_argument('--dataset_root', type=str, default='./data/mvtec_anomaly_detection', help="dataset root")
-    parser.add_argument('--experiment_dir', type=str, default='./experiment/experiment_14', help="dataset root")
+    parser.add_argument('--experiment_dir', type=str, default='./experiment/experiment', help="dataset root")
     parser.add_argument('--classname', type=str, default='capsule', help="dataset class")
     parser.add_argument('--img_size', type=int, default=448, help="dataset root")
     parser.add_argument("--nAnomaly", type=int, default=10, help="the number of anomaly data in training set")
@@ -262,9 +262,9 @@ if __name__ == '__main__':
 
 
     argsDict = args.__dict__
-    if not os.path.exists(args.experiment_dir):
-        os.makedirs(args.experiment_dir)
-    with open(args.experiment_dir + '/setting.txt', 'w') as f:
+    if not os.path.exists(args.experiment_dir + '_' + args.classname):
+        os.makedirs(args.experiment_dir+ '_' + args.classname)
+    with open(args.experiment_dir + '_' + args.classname + '/setting.txt', 'w') as f:
         f.writelines('------------------ start ------------------' + '\n')
         for eachArg, value in argsDict.items():
             f.writelines(eachArg + ' : ' + str(value) + '\n')
@@ -281,5 +281,6 @@ if __name__ == '__main__':
     print("Total training time :", end - start)
     print("Local time :",localtime)    
     trainer.eval()
-    trainer.save_weights(args.savename)
+    # trainer.save_weights(args.savename)
+    trainer.save_weights(args.classname +"_"+ args.savename)
 
