@@ -8,11 +8,19 @@ from models import CoordAtt
 class HolisticHead(nn.Module):
     def __init__(self, in_dim, dropout=0):
         super(HolisticHead, self).__init__()
+        self.attn = CoordAtt(in_dim, in_dim)
+        self.conv = nn.Sequential(nn.Conv2d(in_dim, in_dim, 3, padding=1),
+                                  nn.BatchNorm2d(in_dim),
+                                  nn.ReLU())
         self.fc1 = nn.Linear(in_dim, 256)
         self.fc2 = nn.Linear(256, 1)
         self.drop = nn.Dropout(dropout)
 
     def forward(self, x):
+        x_conv = self.conv(x)
+        x_att = self.attn(x)
+        x =  x_conv * x_att
+        x = self.conv(x)
         x = F.adaptive_avg_pool2d(x, (1, 1))
         x = x.view(x.size(0), -1)
         x = self.drop(F.relu(self.fc1(x)))
@@ -21,7 +29,7 @@ class HolisticHead(nn.Module):
 
 
 class PlainHead(nn.Module):
-    def __init__(self, in_dim, topk_rate=0.1): # in_dim = 512
+    def __init__(self, in_dim, topk_rate=0.1): 
         super(PlainHead, self).__init__()
         self.scoring = nn.Conv2d(in_channels=in_dim, out_channels=1, kernel_size=1, padding=0)
         self.topk_rate = topk_rate
@@ -53,8 +61,9 @@ class CompositeHead(PlainHead):
     def forward(self, x, ref):
         ref = torch.mean(ref, dim=0).repeat([x.size(0), 1, 1, 1]) # 將 ref 的數量擴充到跟 Normal 相同
         x = ref - x
-        # x_att = self. attn(x)
-        # x = self.conv(x)*x_att
+        # x_conv = self.conv(x)
+        # x_att = self.attn(x)
+        # x =  x_conv * x_att
         x = self.conv(x)
         x = super().forward(x)
         return x
@@ -77,8 +86,9 @@ class DRA(nn.Module):
             image_pyramid.append(list())
         for s in range(self.cfg.n_scales):
             image_scaled = F.interpolate(image, size=self.cfg.img_size // (2 ** s)) if s > 0 else image
+            # print("下採樣",image_scaled.shape) # image_scaled.shape = [53, 3, 448, 448]
             feature = self.feature_extractor(image_scaled)
-
+            # print("Feature map大小",feature.shape) # feature.shape = [53, 512, 14, 14])
             ref_feature = feature[:self.cfg.nRef, :, :, :]
             feature = feature[self.cfg.nRef:, :, :, :]
 

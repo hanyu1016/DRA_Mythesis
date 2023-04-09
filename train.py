@@ -105,7 +105,7 @@ class Trainer(object):
                 class_loss[i] += losses[i].item()
 
             tbar.set_description('Epoch:%d, Train loss: %.3f' % (epoch, train_loss / (idx + 1)))
-            wandb.log( {self.args.classname + "Train loss": (train_loss / (idx + 1))}, step=epoch)
+            # wandb.log( {self.args.classname +" "+ "Train loss": (train_loss / (idx + 1))}, step=epoch)
 
 
     def normalization(self, data):
@@ -237,9 +237,9 @@ if __name__ == '__main__':
     parser.add_argument('--outlier_root', type=str, default=None, help="OOD dataset root")
     args = parser.parse_args()
 
-    date = datetime.date.today() 
-    wandb.login()
-    wandb.init(project='DRA', name ='%s'% date + ":"+args.classname)
+    date = datetime.date.today()
+    # wandb.login()
+    # wandb.init(project='DRA', name ='%s'% date + ":"+args.classname)
     
     # Seed setting
     seed = 1
@@ -262,8 +262,8 @@ if __name__ == '__main__':
 
 
     argsDict = args.__dict__
-    if not os.path.exists(args.experiment_dir + '_' + args.classname):
-        os.makedirs(args.experiment_dir+ '_' + args.classname)
+    if not os.path.exists(args.experiment_dir + '_' + args.classname ):
+        os.makedirs(args.experiment_dir+ '_' + args.classname )
     with open(args.experiment_dir + '_' + args.classname + '/setting.txt', 'w') as f:
         f.writelines('------------------ start ------------------' + '\n')
         for eachArg, value in argsDict.items():
@@ -282,5 +282,5 @@ if __name__ == '__main__':
     print("Local time :",localtime)    
     trainer.eval()
     # trainer.save_weights(args.savename)
-    trainer.save_weights(args.classname +"_"+ args.savename)
+    trainer.save_weights( args.classname +"_"+ args.savename)
 
