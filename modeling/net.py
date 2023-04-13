@@ -12,14 +12,22 @@ class HolisticHead(nn.Module):
         self.conv = nn.Sequential(nn.Conv2d(in_dim, in_dim, 3, padding=1),
                                   nn.BatchNorm2d(in_dim),
                                   nn.ReLU())
+        self.conv1 = nn.Conv2d(in_dim, in_dim, kernel_size=3, padding=1, dilation=1)
+        self.conv2 = nn.Conv2d(in_dim, in_dim, kernel_size=3, padding=2, dilation=2)
+        self.conv3 = nn.Conv2d(in_dim, in_dim, kernel_size=3, padding=5, dilation=5)
         self.fc1 = nn.Linear(in_dim, 256)
         self.fc2 = nn.Linear(256, 1)
         self.drop = nn.Dropout(dropout)
 
     def forward(self, x):
+        x_dilated1 = self.conv1(x)
+        x_dilated2 = self.conv2(x)
+        x_dilated3 = self.conv3(x)
+        x_All_dilated = x_dilated1 + x_dilated2 + x_dilated3
         x_conv = self.conv(x)
         x_att = self.attn(x)
         x =  x_conv * x_att
+        x = x_All_dilated + x
         x = self.conv(x)
         x = F.adaptive_avg_pool2d(x, (1, 1))
         x = x.view(x.size(0), -1)
