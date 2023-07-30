@@ -43,25 +43,17 @@ class PlainHead(nn.Module):
         self.topk_rate = topk_rate
 
     def forward(self, x):
-        # print("PlainHead feature: ",x.shape) 
-        # print("origin",x.shape) # [37, 512, 14, 14]
         x = self.scoring(x)
-        # print(x.shape) # [37, 1, 14, 14], size[0] = 37
         x = x.view(int(x.size(0)), -1) 
-        # print(x.shape)
         topk = max(int(x.size(1) * self.topk_rate), 1)
-        # print("TOPK:",topk)
         x = torch.topk(torch.abs(x), topk, dim=1)[0]
-        # print("After TOPK:",x)
         x = torch.mean(x, dim=1).view(-1, 1)
-        # print("Mean:",x)
         return x
 
 
 class CompositeHead(PlainHead):
     def __init__(self, in_dim, topk=0.1):
         super(CompositeHead, self).__init__(in_dim, topk)
-        # self.attn = CoordAtt(in_dim, in_dim)
         self.conv = nn.Sequential(nn.Conv2d(in_dim, in_dim, 3, padding=1),
                                   nn.BatchNorm2d(in_dim),
                                   nn.ReLU())
@@ -69,9 +61,6 @@ class CompositeHead(PlainHead):
     def forward(self, x, ref):
         ref = torch.mean(ref, dim=0).repeat([x.size(0), 1, 1, 1]) # 將 ref 的數量擴充到跟 Normal 相同
         x = ref - x
-        # x_conv = self.conv(x)
-        # x_att = self.attn(x)
-        # x =  x_conv * x_att
         x = self.conv(x)
         x = super().forward(x)
         return x

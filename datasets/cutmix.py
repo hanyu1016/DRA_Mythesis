@@ -55,15 +55,17 @@ class CutMix(object):
         if h <300 and w <300  :
             h = w = 380
 
-        # h = img.size[0]
-        # w = img.size[1]
+        h = img.size[0]
+        w = img.size[1]
 
-        ratio_area = random.uniform(self.area_ratio[0], self.area_ratio[1]) * w * h
-        log_ratio = torch.log(torch.tensor((self.aspect_ratio, 1 / self.aspect_ratio))) # aspect_ratio 畫幅比例
+        ratio_area = random.uniform(self.area_ratio[0], self.area_ratio[1]) * w * h #5101.569905313158
+                                                                                    #random.uniform(self.area_ratio[0], self.area_ratio[1]) = 0.11892511783863484
+        log_ratio = torch.log(torch.tensor((self.aspect_ratio, 1 / self.aspect_ratio))) # aspect_ratio = tensor([-1.2040,  1.2040])
+
         aspect = torch.exp(
             torch.empty(1).uniform_(log_ratio[0], log_ratio[1])
-        ).item()
-
+        ).item()    #0.7918336391448975
+       
         cut_w = int(round(math.sqrt(ratio_area * aspect)))
         cut_h = int(round(math.sqrt(ratio_area / aspect)))
 

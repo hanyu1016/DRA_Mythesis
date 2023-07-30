@@ -21,7 +21,7 @@ class Synthetic_Anomaly_Process(object):
        super(Synthetic_Anomaly_Process, self).__init__()
 
     def __call__(self, img):
-        # print(img.size)
+
         np.random.seed(1)
         seed = 1
         random.seed(seed)
@@ -65,8 +65,7 @@ class Synthetic_Anomaly_Process(object):
             augmenters[aug_ind[2]]
         ])
         structure_source_img = aug(image=image_np)
-        #plt.imshow(structure_source_img)
-        #plt.show()
+       
 
         structure_source_img = rearrange(
             tensor  = structure_source_img, 
@@ -84,54 +83,27 @@ class Synthetic_Anomaly_Process(object):
             w       = 8
         ).astype(np.float32)
 
-        #plt.imshow(structure_source_img.astype(np.uint8))
-        #plt.show()
-
-        # fig, ax = plt.subplots(1,2, figsize=(10,15))
-        # ax[0].imshow(mask_target_background, cmap='gray')
-        # ax[0].set_title('Background')
-        # ax[1].imshow(mask_target_foreground, cmap='gray')
-        # ax[1].set_title('Foreground')
-        #plt.show()
-
-        # print(structure_source_img.shape)
-        #plt.imshow(structure_source_img.astype(np.uint8))
-        #plt.show()
-
         factor = np.random.uniform(
             0.15, 
             1, 
             size=1
         )[0]
-
-        # print('factor: ',factor) factor:  0.39957202611762754
-
+        # factor = 0.39957202611762754
         perlin_scale = 6
         min_perlin_scale = 0
         perlin_scalex = 2 ** (torch.randint(min_perlin_scale, perlin_scale, (1,)).numpy()[0])
         perlin_scaley = 2 ** (torch.randint(min_perlin_scale, perlin_scale, (1,)).numpy()[0])
 
         noise = generate_perlin_noise_2d((448, 448), (perlin_scalex, perlin_scaley))
-        # plt.imshow(noise, cmap='gray', interpolation='lanczos')
-        # plt.show() 
 
         rot = iaa.Affine(rotate=(45, 50))
         perlin_noise = rot(image=noise)
-        #plt.imshow(perlin_noise, cmap='gray')
-        #plt.show()
-
-        # print('max: ',perlin_noise.max())
-        # print('min: ',perlin_noise.min())
 
         threshold = 0.40 # 調整裂痕大小 
         mask_noise = np.where(perlin_noise > threshold, np.ones_like(perlin_noise), np.zeros_like(perlin_noise))
-        #plt.imshow(mask_noise, cmap='gray')
-        #plt.show()
 
         mask = mask_noise * mask_target_foreground
         mask = np.expand_dims(mask, axis=2)
-        #plt.imshow(mask, cmap='gray')
-        #plt.show()
 
         texture_source_img = cv2.imread("D:/Downloads/dtd/images/banded/banded_0077.jpg")
         texture_source_img = cv2.cvtColor(texture_source_img, cv2.COLOR_BGR2RGB)
@@ -139,39 +111,17 @@ class Synthetic_Anomaly_Process(object):
             texture_source_img, 
             dsize=(448, 448)
         ).astype(np.float32)
-        #plt.imshow(texture_source_img.astype(np.uint8))
-        #plt.show()
 
         texture_source_img = factor * (mask * texture_source_img) + (1 - factor) * (mask * img)
         structure_source_img = factor * (mask * structure_source_img) + (1 - factor) * (mask * img)
-        # fig, ax = plt.subplots(1,2, figsize=(10,15))
-        # ax[0].imshow(texture_source_img.astype(np.uint8))
-        # ax[0].set_title('texture')
-        # ax[1].imshow(structure_source_img.astype(np.uint8))
-        # ax[1].set_title('structure')
-        #plt.show()
 
         texture_anomaly = ((- mask + 1) * img) + texture_source_img
         structure_anomaly = ((- mask + 1) * img) + structure_source_img
-        # fig, ax = plt.subplots(1,2, figsize=(10,15))
-        # ax[0].imshow(texture_anomaly.astype(np.uint8))
-        # ax[0].set_title('texture anomaly')
-        # ax[1].imshow(structure_anomaly.astype(np.uint8))
-        # ax[1].set_title('structure anomaly')
-        #plt.show()
 
         texture_image = Image.fromarray(texture_anomaly, mode = 'RGB')
         structure_image = Image.fromarray(structure_anomaly, mode = 'RGB')
 
-      
         if factor >= 0.8 :
             return structure_image
         else :
             return texture_image
-    
-
-
-
-                
-
-

@@ -2,6 +2,7 @@
 experiment/
 data/mvtec_anomaly_detection
 data/VisA_20220922
+data/VisA_20230626
 *.json
 *.png
 *.bak

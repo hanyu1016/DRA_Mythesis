@@ -283,4 +283,3 @@ if __name__ == '__main__':
     trainer.eval()
     # trainer.save_weights(args.savename)
     trainer.save_weights( args.classname +"_"+ args.savename)
-
