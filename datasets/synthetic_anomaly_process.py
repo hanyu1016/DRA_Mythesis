@@ -41,6 +41,7 @@ class Synthetic_Anomaly_Process(object):
         image_np = np.array(img)
         img_gray = cv2.cvtColor(image_np, cv2.COLOR_RGB2GRAY)
 
+        # In this area, you can according to product characteristic adjsut threshold. 
         mask_target_background, mask_target_foreground = cv2.threshold(img_gray, 100, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
         mask_target_foreground = mask_target_foreground.astype(bool).astype(int)
         mask_target_background = -(mask_target_foreground - 1)
@@ -99,12 +100,14 @@ class Synthetic_Anomaly_Process(object):
         rot = iaa.Affine(rotate=(45, 50))
         perlin_noise = rot(image=noise)
 
-        threshold = 0.40 # 調整裂痕大小 
+        # In this area, you can according to characteristic adjsut threshold.
+        threshold = 0.40 # Adjust crack size. 
         mask_noise = np.where(perlin_noise > threshold, np.ones_like(perlin_noise), np.zeros_like(perlin_noise))
 
         mask = mask_noise * mask_target_foreground
         mask = np.expand_dims(mask, axis=2)
 
+        # DTD DataSet image path
         texture_source_img = cv2.imread("D:/Downloads/dtd/images/banded/banded_0077.jpg")
         texture_source_img = cv2.cvtColor(texture_source_img, cv2.COLOR_BGR2RGB)
         texture_source_img = cv2.resize(

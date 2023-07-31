@@ -25,11 +25,12 @@ class CutMix(object):
         img2array_RGB =  cv2.cvtColor(np.asarray(img),cv2.COLOR_RGB2BGR)
         img2array =cv2.cvtColor(np.asarray(img),cv2.COLOR_RGB2GRAY)
 
+        # In this area, you can according to product characteristic adjsut threshold.
         ret,thresh1 = cv2.threshold(img2array,125,225,cv2.THRESH_BINARY_INV)
         kernel = np.ones((3,3), np.uint8) 
         dilation_img = cv2.dilate(thresh1, kernel, iterations = 1)
         gray_lap = cv2.Laplacian(dilation_img, cv2.CV_16S, ksize=3)
-        dst = cv2.convertScaleAbs(gray_lap) # 轉回uint8
+        dst = cv2.convertScaleAbs(gray_lap) 
 
         contours, hierarchy = cv2.findContours(dst, cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
         mx = (0,0,0,0)      # biggest bounding box so far
@@ -78,11 +79,11 @@ class CutMix(object):
         if self.colorJitter:
             patch = self.colorJitter(patch)
 
-        # 比較像是 paste 在物件上的位置
+        # Cutting an object and mixing it into random positions on the object location
         to_location_h = int(random.uniform(0, h - cut_h))
         to_location_w = int(random.uniform(0, w - cut_w))
 
-        # Paste 在整張物件上隨機位置
+        # Cutting an object and mixing it into random positions on the entire image.
         # to_location_h = int(random.uniform(0, img.size[0] - cut_h))
         # to_location_w = int(random.uniform(0, img.size[1] - cut_w))
         # print("img.size[0] :",img.size[0])

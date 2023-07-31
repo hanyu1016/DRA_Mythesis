@@ -1,16 +1,14 @@
-# Catching Both Gray and Black Swans: Open-set Supervised Anomaly Detection (CVPR2022)
-By Choubo Ding, Guansong Pang, Chunhua Shen
-
-Official PyTorch implementation of ["Catching Both Gray and Black Swans: Open-set Supervised Anomaly Detection"](https://arxiv.org/abs/2203.14506).
+# Multi-Stage Data Augmentation and Dilated Coordinate Attention Neural Network
+By Han-yu Chuang, Kai-Lung Hua
 
 ## Prerequisites 
-This code is written in `Python 3.7` and requires the packages listed in `requirements.txt`. Install with `pip install -r
+This code is written in `Python 3.8` and requires the packages listed in `requirements.txt`. Install with `pip install -r
 requirements.txt` preferably in a virtualenv.
 
 ## Run
 
 #### Step 1. Setup the Anomaly Detection Dataset
-Download the Anomaly Detection Dataset and convert it to MVTec AD format. (For datasets we used in the paper, we provided the [convert script](https://github.com/Choubo/DRA/tree/main/data).) 
+Download the Anomaly Detection Dataset and convert it to [**VisA**](https://amazon-visual-anomaly.s3.us-west-2.amazonaws.com/VisA_20220922.tar) format. 
 The dataset folder structure should look like:
 ```
 DATA_PATH/
@@ -25,12 +23,13 @@ DATA_PATH/
             ...
     ...
 ```
-
+and when you built concda virtual environment successfully, you can execute batch file that be named "VisA_generate_setting". Or you can process a command line like Step 2.
 #### Step 2. Running DRA
 ```bash
-python train.py --dataset_root=./data/mvtec_anomaly_detection \
+python train.py --dataset_root=./data/VisA_20230626 \
                 --classname=carpet \
                 --experiment_dir=./experiment
+                >>DRA_VisA_experiment.txt  
 ```
 - `dataset_root` denotes the path of the dataset.
 - `classname` denotes the subset name of the dataset.
@@ -38,12 +37,24 @@ python train.py --dataset_root=./data/mvtec_anomaly_detection \
 - `outlier_root` (*optional) given the path of the outlier dataset to disable pseudo augmentation and enable external data for pseudo head.
 - `know_class` (*optional) specify the anomaly class in the training set to experiment within the hard setting.
 
-## Citation
-```bibtex
-@inproceedings{ding2022catching,
-      title={Catching Both Gray and Black Swans: Open-set Supervised Anomaly Detection}, 
-      author={Ding, Choubo and Pang, Guansong and Shen, Chunhua},
-      booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
-      year={2022}
-}
+
+## Perlin noise process path
 ```
+.\datasets\synthetic_anomaly_process.py
+```
+You can according object characteristic adjsut threshold.
+
+### Simulate Perlin Appearance
+[Genarate Perlin](https://colab.research.google.com/drive/10q1qxyebCBVF6FJhdC_lWnKraJ_AcPd1?usp=drive_link) 
+## CutMix process path
+```
+.\datasets\cutmix.py
+```
+Same as Perlin noise. I write a comment message in code.
+## Git
+[Link](https://github.com/hanyu1016/DRA_Mythesis/tree/v0.1-perlin)
+## Our baseline
+ ["Catching Both Gray and Black Swans: Open-set Supervised Anomaly Detection"](https://arxiv.org/abs/2203.14506).
+## Conference
+Under Review 
+ 
