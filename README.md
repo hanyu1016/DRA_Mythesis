@@ -25,7 +25,7 @@ DATA_PATH/
             ...
     ...
 ```
-
+or you can download dataset in this [link]{https://drive.google.com/file/d/1gCIXP195hDWjvKp6Jmrwavjkz3_6h76z/view}
 #### Step 2. Running DRA
 ```bash
 python train.py --dataset_root=./data/mvtec_anomaly_detection \
