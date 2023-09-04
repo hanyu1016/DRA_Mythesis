@@ -37,8 +37,8 @@ python train.py --dataset_root=./data/VisA_20230626 \
 - `experiment_dir` denotes the path to store the experiment setting and model weight.
 - `outlier_root` (*optional) given the path of the outlier dataset to disable pseudo augmentation and enable external data for pseudo head.
 - `know_class` (*optional) specify the anomaly class in the training set to experiment within the hard setting.
-
-
+## DTD datasets
+[DTD Download Link](https://drive.google.com/file/d/1FYxBWDFxDbbKoEK_5E1WEg5IfbiEXHmT/view?usp=sharing)
 ## Perlin noise process path
 ```
 .\datasets\synthetic_anomaly_process.py
