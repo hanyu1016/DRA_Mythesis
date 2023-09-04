@@ -23,6 +23,7 @@ DATA_PATH/
             ...
     ...
 ```
+or you can download dataset in this [link](https://drive.google.com/file/d/1gCIXP195hDWjvKp6Jmrwavjkz3_6h76z/view)
 and when you built concda virtual environment successfully, you can execute batch file that be named "VisA_generate_setting". Or you can process a command line like Step 2.
 #### Step 2. Running DRA
 ```bash
